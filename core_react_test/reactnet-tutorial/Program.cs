@@ -1,8 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using reactnet_tutorial.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
+
+var connectionString = builder.Configuration.GetConnectionString("PSQLConnection");
+builder.Services.AddDbContext<MyDBContext>(options => options.UseNpgsql(connectionString));
 
 var app = builder.Build();
 
