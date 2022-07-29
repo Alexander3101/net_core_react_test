@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Create from './notes/create';
 
 export class FetchNotes extends Component {
   static displayName = FetchNotes.name;
@@ -12,9 +13,17 @@ export class FetchNotes extends Component {
     this.populateNotesData();
   }
 
+  static renderCreateNote() {
+    return (
+      <div>
+        <Create/>
+      </div>
+    );
+  }
+
   static renderNotesTable(notes) {
     return (
-      <table className='table table-striped' aria-labelledby="tabelLabel">
+    <table className='table table-striped' aria-labelledby="tabelLabel">
         <thead>
           <tr>
             <th>Title</th>
@@ -34,21 +43,26 @@ export class FetchNotes extends Component {
   }
 
   render() {
+    let createNote = this.state.loading
+      ? <p><em>Loading Create form</em></p>
+      : FetchNotes.renderCreateNote();
+
     let contents = this.state.loading
-      ? <p><em>Loading... Please stand by</em></p>
+      ? <p><em>Loading table... Please stand by</em></p>
       : FetchNotes.renderNotesTable(this.state.notes);
 
     return (
       <div>
         <h1 id="tabelLabel" >Notes</h1>
         <p>This component demonstrates fetching notes data from the server.</p>
+        {createNote}
         {contents}
       </div>
     );
   }
 
   async populateNotesData() {
-    const response = await fetch('api/Notes/GetNotes');
+    const response = await fetch('/api/notes');
     const data = await response.json();
     this.setState({ notes: data, loading: false });
   }
